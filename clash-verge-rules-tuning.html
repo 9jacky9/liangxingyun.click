@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clash Verge Rev进阶实战：分流规则集与故障自动转移配置 - 极速快讯</title>
-  <meta name="description" content="全面讲解开源客户端Clash Verge Rev进阶配置技巧。手把手配置外部规则集Rule-Provider、Fallback故障自动剔除及TUN虚拟网卡无感接管。">
+  <title>客户端开机自启与后台保活：避免用到一半失效 - 极速快讯</title>
+  <meta name="description" content="客户端用着用着就失效？介绍开机自启、系统服务模式、省电与后台限制设置，以及电脑睡眠与网络切换后的恢复办法。">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -60,60 +60,29 @@
   <main class="layout-wrapper">
     <div class="article-wrap">
       <nav class="breadcrumb">
-        <a href="index.html">首页</a> &gt; <a href="news.html">极速快讯</a> &gt; <span>实战教程</span>
+        <a href="index.html">首页</a> &gt; <a href="news.html">极速快讯</a> &gt; <span>客户端</span>
       </nav>
 
       <header class="article-header">
-        <h1 class="article-title">Clash Verge Rev进阶实战：分流规则集与故障自动转移配置</h1>
+        <h1 class="article-title">客户端开机自启与后台保活：避免用到一半失效</h1>
         <div class="article-meta-bar">
-          <span>发布时间：2026-10-12</span>
-          <span>作者：终端技术专栏</span>
-          <span>分类：客户端实战</span>
-          <span>阅读时长：约 5 分钟 (1080字)</span>
-        </div>
+ <span>发布时间：2026-11-13</span> <span>作者：良心云使用手记</span> <span>分类：客户端</span> <span>阅读时长：约 5 分钟</span>
+ </div>
       </header>
 
       <article class="article-body">
-        <p>
-          伴随原生 Clash 内核的停更，基于 Clash Meta（Mihomo）内核深度定制的开源跨平台客户端 <strong>Clash Verge Rev</strong> 已成为 Windows 和 macOS 平台上的绝对主力工具。然而，大部分用户仅仅停留在“导入订阅并开启系统代理”的初级用法，并未充分释放其强大的动态规则引擎能力。本文将为您详细梳理如何通过外部规则集与策略组配置，打造毫秒级无感切换的网络环境。
-        </p>
-
-        <h2>一、启用TUN模式实现全系统流量接管</h2>
-        <p>
-          传统的系统代理（System Proxy）仅能作用于遵循 HTTP/HTTPS 代理环境配置的浏览器类软件，而对于命令行终端、Git 仓库拉取、部分游戏对战平台等往往无能为力。
-        </p>
-        <p>
-          在 Clash Verge Rev 设置中，优先安装 Service 核心服务并开启 <strong>TUN 模式</strong>。该模式会在操作系统内核层虚拟出一块网络适配卡，强行接管所有 TCP 与 UDP 原始数据包。结合内置的 Fake-IP DNS 响应机制，能将跨国解析延迟降低至 1 毫秒以下，从根本上杜绝 DNS 污染与查询泄漏。详细的各操作系统平台安装调试步骤，亦可参考 <a href="https://tizilab.net/" target="_blank">梯子实验室科学上网工具配置指南</a> 中的系列图文专题。
-        </p>
-
-        <h2>二、高效配置Rule-Provider外部规则集</h2>
-        <p>
-          手写静态规则不仅繁琐，且无法跟进海外流媒体与 AI 服务的最新域名网段变更。利用 Clash Meta 内核支持的 `rule-providers` 机制，可以让客户端每日自动从远端同步最新的高精度分流规则：
-        </p>
-        <ul>
-          <li><strong>OpenAI / Claude 专属组：</strong>精准匹配 AI 领域全套通信域名，统一分流至干净高权重的专线住宅 IP；</li>
-          <li><strong>流媒体全区组：</strong>整合 Netflix、Disney+、YouTube 的 ASN 规则列表，定向分流至大带宽低抖动节点；</li>
-          <li><strong>国内白名单直连组：</strong>基于中国大陆 IP 库（GeoIP:CN）与大陆域名列表，直连绕过代理，节省宝贵专线流量。</li>
-        </ul>
-
-        <h2>三、构建Fallback与URL-Test自动化容灾组</h2>
-        <p>
-          在单点服务器遭遇突发性网络上游闪断时，手动频繁测速和切换节点极为破坏工作心流。通过在配置文件中声明策略组，可以实现完全智能化的容灾切换：
-        </p>
-        <h3>1. URL-Test 自动优选策略组</h3>
-        <p>
-          设定每隔 300 秒向健康探测地址（如 `http://cp.cloudflare.com/generate_204`）发送探测请求，容差范围设定为 50ms。客户端将自动锁定并沿用延迟最低的健康节点。
-        </p>
-        <h3>2. Fallback 故障降级转移组</h3>
-        <p>
-          按照节点优先级顺序排布服务器列表。当主力线路发生故障或心跳失联超过 3 次时，流量将在毫秒内自动顺延转移至备用物理专线，期间长连接会话几乎感受不到任何断流。
-        </p>
-
-        <div class="article-callout">
-          <strong>极速配置建议：</strong>配置优秀策略组的前提是服务商节点命名规范且支持原生订阅直连。良心云全线节点均针对 Clash Verge Rev 进行语法语义适配，一键导入即包含完整的分流策略规则，极大地节省了高级用户的调试成本。
-        </div>
-
-        <div class="article-cta-box">
+<p>很多人遇到“昨天还好好的，今天打不开了”，常常只是客户端没有在后台正常运行。</p>
+<h2>一、开机自启</h2>
+<p>在客户端设置里开启开机自启，并确认系统的启动项中没有被禁用。需要管理员权限的模式，可以使用服务模式，让它在登录前就运行。</p>
+<h2>二、手机上的后台保活</h2>
+<ul><li>安卓：加入电池优化白名单，允许自启动。</li><li>iOS：允许后台应用刷新，不要手动划掉客户端。</li></ul>
+<h2>三、电脑睡眠与唤醒</h2>
+<p>电脑睡眠唤醒后，网络连接可能重置。开启客户端的自动重连，或在唤醒后手动重启客户端。</p>
+<h2>四、避免被其他软件干扰</h2>
+<p>安全软件与其他代理软件可能终止或拦截客户端。把它加入白名单，并只保留一个代理程序。</p>
+<h2>五、简单的自检</h2>
+<p>遇到失效时，先看客户端是否在运行、系统代理是否仍指向它、节点是否可用，三项排查通常能很快恢复。</p>
+ <div class="article-cta-box">
           <div class="article-cta-title">一键导入良心云专属智能规则订阅</div>
           <div class="article-cta-desc">全平台主流客户端原生语法支持，全自动策略分流与健康容灾调度</div>
           <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="btn btn-flame-primary">
