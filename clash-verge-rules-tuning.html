@@ -1,114 +1,110 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>客户端开机自启与后台保活：避免用到一半失效 - 极速快讯</title>
-  <meta name="description" content="客户端用着用着就失效？介绍开机自启、系统服务模式、省电与后台限制设置，以及电脑睡眠与网络切换后的恢复办法。">
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clash Verge规则怎么检查：从命中策略到开机启动的排错顺序</title>
+<meta content="解释规则命中、策略组和接管方式之间的关系，提供可回退的单站点调试与开机恢复检查步骤。" name="description"/>
+<link href="style.css" rel="stylesheet"/>
 </head>
 <body>
-
-  <!-- 顶部导航 -->
-  <header class="flame-header">
-    <div class="top-flare-strip"></div>
-    <div class="nav-container">
-      <a href="index.html" class="logo-flame-link" title="良心云官方网站">
-        <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="flameHeartGradArt3" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#ff1a00" />
-              <stop offset="50%" stop-color="#ff5722" />
-              <stop offset="100%" stop-color="#ffb700" />
-            </linearGradient>
-          </defs>
-          <path d="M50 88C50 88 18 64 14 38C10 20 25 10 38 16C46 20 50 28 50 28C50 28 54 20 62 16C75 10 90 20 86 38C82 64 50 88 50 88Z" fill="url(#flameHeartGradArt3)" />
-          <path d="M50 74C50 74 28 56 26 40C24 30 32 23 40 28C46 32 50 38 50 38C50 38 54 32 60 28C68 23 76 30 74 40C72 56 50 74 50 74Z" fill="#ffffff" opacity="0.88" />
-        </svg>
-        <div class="logo-meta">
-          <span class="logo-title">良心云</span>
-          <span class="logo-tagline">以赤诚炽心 铸闪电极速</span>
-        </div>
-      </a>
-      <!-- 纯CSS响应式移动端导航开关 -->
-      <input type="checkbox" id="flameNavToggle" class="mobile-nav-input" aria-label="切换移动端导航">
-
-      <nav class="flame-nav-menu">
-        <ul class="flame-nav-list">
-          <li><a href="index.html#speed-experience" class="flame-nav-link">极致极速体验</a></li>
-          <li><a href="index.html#streaming-ai" class="flame-nav-link">流媒体与AI</a></li>
-          <li><a href="index.html#pricing" class="flame-nav-link">热力定价</a></li>
-          <li><a href="index.html#faq" class="flame-nav-link">常见解答</a></li>
-          <li><a href="index.html#testimonials" class="flame-nav-link">用户口碑</a></li>
-          <li><a href="news.html" class="flame-nav-link active">极速快讯</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="btn btn-flame-primary btn-sm">
+<!-- 顶部导航 -->
+<header class="flame-header">
+<div class="top-flare-strip"></div>
+<div class="nav-container">
+<a class="logo-flame-link" href="index.html" title="良心云官方网站">
+<svg class="logo-svg" fill="none" viewbox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient id="flameHeartGradArt3" x1="0%" x2="100%" y1="100%" y2="0%">
+<stop offset="0%" stop-color="#ff1a00"></stop>
+<stop offset="50%" stop-color="#ff5722"></stop>
+<stop offset="100%" stop-color="#ffb700"></stop>
+</lineargradient>
+</defs>
+<path d="M50 88C50 88 18 64 14 38C10 20 25 10 38 16C46 20 50 28 50 28C50 28 54 20 62 16C75 10 90 20 86 38C82 64 50 88 50 88Z" fill="url(#flameHeartGradArt3)"></path>
+<path d="M50 74C50 74 28 56 26 40C24 30 32 23 40 28C46 32 50 38 50 38C50 38 54 32 60 28C68 23 76 30 74 40C72 56 50 74 50 74Z" fill="#ffffff" opacity="0.88"></path>
+</svg>
+<div class="logo-meta">
+<span class="logo-title">良心云</span>
+<span class="logo-tagline">以赤诚炽心 铸闪电极速</span>
+</div>
+</a>
+<!-- 纯CSS响应式移动端导航开关 -->
+<input aria-label="切换移动端导航" class="mobile-nav-input" id="flameNavToggle" type="checkbox"/>
+<nav class="flame-nav-menu">
+<ul class="flame-nav-list">
+<li><a class="flame-nav-link" href="index.html#speed-experience">极致极速体验</a></li>
+<li><a class="flame-nav-link" href="index.html#streaming-ai">流媒体与AI</a></li>
+<li><a class="flame-nav-link" href="index.html#pricing">热力定价</a></li>
+<li><a class="flame-nav-link" href="index.html#faq">常见解答</a></li>
+<li><a class="flame-nav-link" href="index.html#testimonials">用户口碑</a></li>
+<li><a class="flame-nav-link active" href="news.html">极速快讯</a></li>
+</ul>
+</nav>
+<div class="nav-actions">
+<a class="btn btn-flame-primary btn-sm" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">
           立即开通
         </a>
-              <label for="flameNavToggle" class="mobile-nav-toggle-btn" aria-label="打开/关闭导航菜单">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </label>
-      </div>
-    </div>
-  </header>
-
-  <!-- 文章正文区域 -->
-  <main class="layout-wrapper">
-    <div class="article-wrap">
-      <nav class="breadcrumb">
-        <a href="index.html">首页</a> &gt; <a href="news.html">极速快讯</a> &gt; <span>客户端</span>
-      </nav>
-
-      <header class="article-header">
-        <h1 class="article-title">客户端开机自启与后台保活：避免用到一半失效</h1>
-        <div class="article-meta-bar">
- <span>发布时间：2026-11-13</span> <span>作者：良心云使用手记</span> <span>分类：客户端</span> <span>阅读时长：约 5 分钟</span>
- </div>
-      </header>
-
-      <article class="article-body">
-<p>很多人遇到“昨天还好好的，今天打不开了”，常常只是客户端没有在后台正常运行。</p>
-<h2>一、开机自启</h2>
-<p>在客户端设置里开启开机自启，并确认系统的启动项中没有被禁用。需要管理员权限的模式，可以使用服务模式，让它在登录前就运行。</p>
-<h2>二、手机上的后台保活</h2>
-<ul><li>安卓：加入电池优化白名单，允许自启动。</li><li>iOS：允许后台应用刷新，不要手动划掉客户端。</li></ul>
-<h2>三、电脑睡眠与唤醒</h2>
-<p>电脑睡眠唤醒后，网络连接可能重置。开启客户端的自动重连，或在唤醒后手动重启客户端。</p>
-<h2>四、避免被其他软件干扰</h2>
-<p>安全软件与其他代理软件可能终止或拦截客户端。把它加入白名单，并只保留一个代理程序。</p>
-<h2>五、简单的自检</h2>
-<p>遇到失效时，先看客户端是否在运行、系统代理是否仍指向它、节点是否可用，三项排查通常能很快恢复。</p>
- <div class="article-cta-box">
-          <div class="article-cta-title">一键导入良心云专属智能规则订阅</div>
-          <div class="article-cta-desc">全平台主流客户端原生语法支持，全自动策略分流与健康容灾调度</div>
-          <a href="https://ww012.twilightaff.com/#/?code=A56DH1Af" target="_blank" rel="nofollow" class="btn btn-flame-primary">
+<label aria-label="打开/关闭导航菜单" class="mobile-nav-toggle-btn" for="flameNavToggle">
+<span class="hamburger-line"></span>
+<span class="hamburger-line"></span>
+<span class="hamburger-line"></span>
+</label>
+</div>
+</div>
+</header>
+<!-- 文章正文区域 -->
+<main class="layout-wrapper">
+<div class="article-wrap">
+<nav class="breadcrumb">
+<a href="index.html">首页</a> &gt; <a href="news.html">极速快讯</a> &gt; <span>客户端</span>
+</nav>
+<header class="article-header">
+<h1 class="article-title">Clash Verge规则怎么检查：从命中策略到开机启动的排错顺序</h1>
+<div class="article-meta-bar">
+<span>发布时间：2026-11-13</span> <span>作者：良心云使用手记</span> <span>分类：客户端</span> <span>阅读时长：约 5 分钟</span>
+</div>
+</header>
+<article class="article-body"><div data-swc-article-body="2026-11-16"><p>配置导入成功、节点也能测到延迟，却有个网站一直打不开，问题未必在节点本身。Clash Verge及其维护分支的界面会随版本变化，但排错可以沿着同一条线索：请求有没有进入内核，命中了哪条规则，规则选了哪个策略，策略最终用了哪个出口。先理清这四层，比不断切换全局模式更容易定位。</p>
+<h2>修改前保留一份能恢复的配置</h2>
+<p>记下软件版本、内核版本、当前订阅名称和运行模式，截图当前策略组选择。通过软件支持的方式导出个人配置或备份覆写文件，保存到自己的设备，不放到公共网盘。订阅内容可能包含访问凭据，分享截图时要遮住地址和令牌。不同分支并不保证使用相同菜单，操作前核对本机界面。</p>
+<p>把本次目标限定为一个具体问题，例如浏览器能打开其他网站，但代码托管站超时。不要同时改端口、节点、解析服务器和全套规则。若修改前没有稳定状态，先建立最小可用配置，再逐项加入自定义规则；否则任何一条新设置都可能掩盖旧问题。</p>
+<h2>先确认请求有没有进入客户端</h2>
+<p>打开客户端的连接记录，再访问目标网站。如果完全看不到相关请求，检查系统代理开关和应用自身的代理设置。某些程序不遵守系统代理，需要该程序单独配置，或使用软件文档支持的其他接管模式。不要因为浏览器成功，就断言游戏、终端和所有后台服务已经被接管。</p>
+<p>出现请求后，记录目标域名、进程和策略链。如果网页同时加载图片、登录和接口服务，只观察主域名可能不够。应在故障发生时查看具体失败连接，而不是把所有关联域名都加入同一个大范围规则。访问日志会包含使用习惯，排查结束后按自己的隐私要求处理。</p>
+<h2>沿着规则命中结果检查策略组</h2>
+<p>规则通常按顺序匹配，前面的精确规则或较宽的规则可能先命中。发现目标走错出口时，先定位那条规则，而不是直接在列表末尾追加一条看似正确的记录。还要确认规则引用的策略组名称存在，拼写、空格和大小写是否符合当前配置，不能把节点名称与策略组名称混用。</p>
+<p>为了理解<a href="https://dajichang.mom/">Clash Verge规则配置</a>，可以选一个自己有权访问的测试域名进行单项演练：记录原策略，添加范围最小的临时规则，重新发起连接，再查看命中结果。测试结束后恢复原设置。若结果没变，先确认新配置确实已经应用，而不是继续叠加规则。</p>
+<h2>全局与直连只作为有限的对照</h2>
+<p>临时全局测试能帮助判断规则分流是否参与了问题，但它不能证明某条自定义规则正确。直连模式通常仍可能经过客户端内核，不能等同于彻底退出程序后的网络路径。需要测试完全不经过客户端时，应按软件的退出流程关闭接管，再确认系统代理已经恢复。</p>
+<p>在办公网络或需要访问本地打印机、网盘的环境，不要长期用全局模式掩盖规则错误。先检查这些资源应走哪条路径，并验证本地地址是否保持可达。测试期间关闭正在进行的敏感业务，避免切换路径打断文件上传、会议或远程维护连接。</p>
+<h2>规则没错时，再看解析和旧连接</h2>
+<p>域名解析、应用缓存与已经建立的连接可能使观察结果滞后。更改规则后重新打开目标页面，必要时按软件支持的方式结束对应旧连接，再进行复测。不要随意清空所有系统网络设置；应先确认失败的是名称解析、连接建立还是应用返回的权限错误。</p>
+<p>如果解析得到的地址与预期不同，记录客户端采用的解析模式、上游和规则相关选项，再查看官方说明。不要从别人的教程整段复制解析配置，因为网络环境和内核版本可能不一样。错误的组合可能让国内资源变慢，也可能使原本正常的局域网名称无法解析。</p>
+<h2>开机启动和后台运行需要单独验收</h2>
+<p>开机自启成功不代表内核、订阅和系统代理都已经就绪。重启后先看内核运行状态，再确认选中的配置与策略组，最后访问一个测试站点。若软件支持服务模式，按该版本文档安装和检查，不因一个启动故障就关闭安全软件或扩大文件夹权限。</p>
+<p>完成调整后，分别测试正常重启、休眠唤醒和网络切换。每次记录问题是否恢复、规则是否仍然命中，以及本地资源是否受影响。把最终有效改动整理成简短说明，保留原备份，删除已证明无效的临时规则。能解释每条规则的用途，才是一份容易维护的配置。</p><p>订阅更新后自定义内容是否保留，也应专门测试。优先采用软件正式支持的覆写机制；直接修改会被重新下载的订阅文件，可能让今天修好的规则在下次更新时悄悄消失。</p></div><div class="article-original-promotion"><a class="btn btn-flame-primary" href="https://ww012.twilightaff.com/#/?code=A56DH1Af" rel="nofollow" target="_blank">
             立即获取智能配置
-          </a>
-        </div>
-      </article>
-    </div>
-  </main>
-
-  <!-- 页脚 -->
-  <footer class="flame-footer">
-    <div class="layout-wrapper">
-      <ul class="footer-nav-list">
-        <li class="footer-nav-item"><a href="sitemap.html">网站地图</a></li>
-        <li class="footer-nav-item"><a href="about.html">关于我们</a></li>
-        <li class="footer-nav-item"><a href="terms.html">服务条款</a></li>
-        <li class="footer-nav-item"><a href="privacy.html">隐私政策</a></li>
-      </ul>
-      <div class="footer-copy">
-        &copy; 2026 良心云 (Liangxingyun.click). 保留所有权利。
+          </a></div></article>
+</div>
+</main>
+<!-- 页脚 -->
+<footer class="flame-footer">
+<div class="layout-wrapper">
+<ul class="footer-nav-list">
+<li class="footer-nav-item"><a href="sitemap.html">网站地图</a></li>
+<li class="footer-nav-item"><a href="about.html">关于我们</a></li>
+<li class="footer-nav-item"><a href="terms.html">服务条款</a></li>
+<li class="footer-nav-item"><a href="privacy.html">隐私政策</a></li>
+</ul>
+<div class="footer-copy">
+        © 2026 良心云 (Liangxingyun.click). 保留所有权利。
       </div>
-    </div>
-  </footer>
-  <!-- 移动端导航点击后自动收起微脚本 (原生无依赖) -->
-  <script>
+</div>
+</footer>
+<!-- 移动端导航点击后自动收起微脚本 (原生无依赖) -->
+<script>
     document.querySelectorAll('.flame-nav-link').forEach(function(l) {
       l.addEventListener('click', function() {
         var t = document.getElementById('flameNavToggle');
